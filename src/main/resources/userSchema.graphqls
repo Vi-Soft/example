@@ -1,0 +1,19 @@
+type SigninPayload {
+	token: String
+	user: User
+}
+
+type User {
+	id: ID!
+	name: String
+	email: String
+	passwd: String
+}
+
+input AuthData {
+	email: String!
+	passwd: String!
+}
+
+
+
