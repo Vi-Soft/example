@@ -10,7 +10,7 @@ requirements:
 	
 Get started:
 	1. open terminal
-	2. clone the project: git clone https://github.com/Vi-Soft/Vi-Soft-NG.git
+	2. clone the project: git clone https://github.com/Vi-Soft/example.git
 	3. cd to example directory: cd Vi-Soft-NG/java-example/example/
 	4. to compile and run: mvn clean package exec:exec
 	5. open browser with URL: http://localhost:8080/graphql
