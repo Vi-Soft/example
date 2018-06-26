@@ -10,13 +10,13 @@ import com.networknt.hackernews.user.UserRepository;
 public class LinkResolver {
 
 	/**
-	 * @param userId
+	 * @param id
 	 * @return User
 	 */
-	public static User postedBy(final String userId) {
+	public static User postedBy(final String id) {
 		User user = null;
-		if (userId != null) {
-			user = UserRepository.findById(userId);
+		if (id != null) {
+			user = UserRepository.findById(id);
 		}
 
 		return user;

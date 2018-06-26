@@ -9,7 +9,7 @@ import com.networknt.hackernews.user.User;
 import com.networknt.hackernews.user.UserRepository;
 import com.networknt.hackernews.vote.Vote;
 import com.networknt.hackernews.vote.VoteResolver;
-import com.networknt.utils.Const;
+import com.visoft.utils.Const;
 
 import graphql.schema.DataFetcher;
 
@@ -26,13 +26,13 @@ public interface Query {
 	DataFetcher<List<User>> allUsers = env -> UserRepository.getAllUsers();
 
 	DataFetcher<Link> findLinkById = env -> LinkRepository
-			.findById(env.getArgument(Const._ID));
+			.findById(env.getArgument(Const._ID).toString());
 
 	DataFetcher<User> findUserById = env -> UserRepository
 			.findById(env.getArgument(Const._ID));
 
 	DataFetcher<User> postedBy = env -> LinkResolver
-			.postedBy(((Link) env.getSource()).getPostedBy());
+			.postedBy( ((Link)env.getSource()).getPostedBy());
 
 	DataFetcher<User> user = env -> VoteResolver
 			.user(((Vote) env.getSource()).getUserId());

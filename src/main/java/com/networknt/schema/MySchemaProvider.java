@@ -9,10 +9,10 @@ import com.networknt.graphql.router.SchemaProvider;
 import com.networknt.hackernews.Mutation;
 import com.networknt.hackernews.Query;
 import com.networknt.hackernews.link.Link;
-import com.networknt.hackernews.vote.Scalars;
 import com.networknt.hackernews.vote.Vote;
-import com.networknt.utils.Const;
-import com.networknt.utils.FileUtils;
+import com.visoft.utils.Const;
+import com.visoft.utils.FileUtil;
+import com.visoft.utils.Scalars;
 
 import graphql.GraphQLException;
 import graphql.schema.GraphQLSchema;
@@ -51,6 +51,7 @@ public final class MySchemaProvider implements SchemaProvider {
 
 	private static RuntimeWiring buildRuntimeWiring() {
 		return RuntimeWiring.newRuntimeWiring().scalar(Scalars.dateTime)
+				.scalar(Scalars.objectId)
 				.type(Query.class.getSimpleName(), typeWiring -> typeWiring
 						.dataFetcher(Const.ALL_LINKS, Query.allLinks)
 						.dataFetcher(Const.ALL_USERS, Query.allUsers)
@@ -73,7 +74,7 @@ public final class MySchemaProvider implements SchemaProvider {
 	private static String loadSchema(final String schemaFile) {
 		try (InputStream is = MySchemaProvider.class.getClassLoader()
 				.getResourceAsStream(schemaFile)) {
-			return FileUtils.readInputStream(is);
+			return FileUtil.readInputStream(is);
 		} catch (Exception e) {
 			logger.error("IOException:", e);
 			throw new GraphQLException("Error on reading graphql schema.");

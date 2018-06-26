@@ -4,7 +4,7 @@ type SigninPayload {
 }
 
 type User {
-	id: ID!
+	id: ObjectId!
 	name: String
 	email: String
 	passwd: String
@@ -15,5 +15,5 @@ input AuthData {
 	passwd: String!
 }
 
-
+scalar ObjectId
 

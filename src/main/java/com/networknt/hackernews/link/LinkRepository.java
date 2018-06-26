@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
@@ -17,7 +16,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.networknt.hackernews.user.User;
 import com.networknt.hackernews.user.UserRepository;
-import com.networknt.utils.Const;
+import com.visoft.utils.Const;
+import com.visoft.utils.DBUtils;
 
 import graphql.GraphQLException;
 
@@ -27,16 +27,16 @@ import graphql.GraphQLException;
  */
 public class LinkRepository {
 
-	private static final MongoCollection<Document> links = Const.MONGO
-			.getCollection("links");
+	private static final MongoCollection<Link> links = DBUtils.DB
+			.getCollection("links", Link.class);
 
 	/**
 	 * @param id
 	 * @return Link
 	 */
 	public static Link findById(final String id) {
-		Document doc = links.find(eq(Const._ID, new ObjectId(id))).first();
-		return link(doc);
+		Link link = links.find(eq(Const._ID, new ObjectId(id))).first();
+		return link;
 	}
 
 	/**
@@ -49,11 +49,11 @@ public class LinkRepository {
 		Optional<Bson> mongoFilter = Optional.ofNullable(filterData)
 				.map(LinkRepository::buildLinkFilter);
 		List<Link> allLinks = new ArrayList<>();
-		FindIterable<Document> documents = mongoFilter.map(links::find)
+		FindIterable<Link> selectedLinks= mongoFilter.map(links::find)
 				.orElseGet(links::find);
-		for (Document doc : documents.skip(skip.intValue())
+		for (Link link : selectedLinks.skip(skip.intValue())
 				.limit(limit.intValue())) {
-			allLinks.add(link(doc));
+			allLinks.add(link);
 		}
 		return allLinks;
 	}
@@ -63,11 +63,7 @@ public class LinkRepository {
 	 * @return Link
 	 */
 	public static Link saveLink(final Link link) {
-		Document doc = new Document();
-		doc.append(Link.URL, link.getUrl());
-		doc.append(Link.DESCRIPTION, link.getDescription());
-		doc.append(Link.POSTED_BY, link.getPostedBy());
-		links.insertOne(doc);
+		links.insertOne(link);
 		return link;
 	}
 
@@ -84,13 +80,8 @@ public class LinkRepository {
 		if (user == null) {
 			throw new GraphQLException("The user is not authorised");
 		}
-		Link newLink = new Link(url, description, user.getId());
+		Link newLink = new Link(url, description, user.getId().toString());
 		return LinkRepository.saveLink(newLink);
-	}
-
-	private static Link link(final Document doc) {
-		return new Link(doc.get(Const._ID).toString(), doc.getString(Link.URL),
-				doc.getString(Link.DESCRIPTION), doc.getString(Link.POSTED_BY));
 	}
 
 	// build a Bson from filtering a getAllLinks

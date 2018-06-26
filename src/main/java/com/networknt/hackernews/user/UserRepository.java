@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoCollection;
-import com.networknt.utils.Const;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
+import com.visoft.utils.Const;
+import com.visoft.utils.DBUtils;
 
 import graphql.GraphQLException;
 
@@ -25,15 +27,22 @@ public class UserRepository {
 
 	public static final String USERS_MONGO_COLLECTION = "users";
 
-	private static final MongoCollection<Document> users = Const.MONGO
-			.getCollection(USERS_MONGO_COLLECTION);
+	public static final IndexOptions indexOptions = new IndexOptions()
+			.unique(true);
+	private static final MongoCollection<User> users = DBUtils.DB
+			.getCollection(USERS_MONGO_COLLECTION)
+			.withDocumentClass(User.class);
+
+	// email field must be unique
+	public static final String emailIndex = users
+			.createIndex(Indexes.ascending("email"), indexOptions);
 
 	public static List<User> getAllUsers() {
 		List<User> allUsers = new ArrayList<>();
 
-		for (Document doc : users.find()) {
+		for (User user : users.find()) {
 
-			allUsers.add(user(doc));
+			allUsers.add(user);
 		}
 		return allUsers;
 	}
@@ -43,8 +52,8 @@ public class UserRepository {
 	 * @return User
 	 */
 	public static User findById(final String id) {
-		Document doc = users.find(eq(Const._ID, new ObjectId(id))).first();
-		return user(doc);
+		User user = users.find(eq("_id", new ObjectId(id))).first();
+		return user;
 	}
 
 	/**
@@ -74,7 +83,7 @@ public class UserRepository {
 
 		User user = UserRepository.findByEmail(email);
 		if (user.getPasswd().equals(passwd)) {
-			return new SigninPayload(user.getId(), user);
+			return new SigninPayload(user.getId().toString(), user);
 		}
 		throw new GraphQLException("Invalid credentials");
 	};
@@ -84,8 +93,8 @@ public class UserRepository {
 	 * @return User
 	 */
 	public static User findByEmail(final String email) {
-		Document doc = users.find(eq(Const.EMAIL, email)).first();
-		return user(doc);
+		User user = users.find(eq(Const.EMAIL, email)).first();
+		return user;
 	}
 
 	/**
@@ -101,19 +110,8 @@ public class UserRepository {
 	 * @return User
 	 */
 	public static User saveUser(final User user) {
-		Document doc = new Document();
-		doc.append(Const.NAME, user.getName());
-		doc.append(Const.EMAIL, user.getEmail());
-		doc.append(Const.PASSWD, user.getPasswd());
-		users.insertOne(doc);
-		return new User(doc.get(Const._ID).toString(), user.getName(),
-				user.getEmail(), user.getPasswd());
-	}
-
-	private static User user(final Document doc) {
-		return new User(doc.get(Const._ID).toString(),
-				doc.getString(Const.NAME), doc.getString(Const.EMAIL),
-				doc.getString(Const.PASSWD));
+		users.insertOne(user);
+		return user;
 	}
 
 	private static Bson buildFilter(final UserFilter filter) {

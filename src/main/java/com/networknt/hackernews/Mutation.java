@@ -7,8 +7,8 @@ import com.networknt.hackernews.user.User;
 import com.networknt.hackernews.user.UserRepository;
 import com.networknt.hackernews.vote.Vote;
 import com.networknt.hackernews.vote.VoteRepository;
-import com.networknt.utils.Const;
-import com.networknt.utils.HttpUtils;
+import com.visoft.utils.Const;
+import com.visoft.utils.HttpUtil;
 
 import graphql.schema.DataFetcher;
 
@@ -23,7 +23,7 @@ public interface Mutation {
 
 	DataFetcher<Link> createLink = env -> LinkRepository.createLink(
 			env.getArgument(Const.URL), env.getArgument(Const.DESCRIPTION),
-			HttpUtils.getTokenFromExchange(env.getContext()));
+			HttpUtil.getTokenFromExchange(env.getContext()));
 
 	DataFetcher<User> createUser = env -> UserRepository.createUser(
 			env.getArgument(Const.NAME), env.getArgument(Const.AUTH_PROVIDER));

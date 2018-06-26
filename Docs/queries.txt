@@ -1,0 +1,46 @@
+query allLinks{
+  allLinks{
+    url
+    description
+   
+  }
+}
+
+mutation createLink{
+  createLink(url:"https://www.howtographql.com/graphql-java", description:"howto graphql"){
+    url
+    description
+  }
+}
+
+query getLink{
+  findLinkById(_id: "5b2a46bdf755d57ebb760cd9"){
+    id
+    url
+    description
+    postedBy{
+      name
+    }
+  }
+}
+
+mutation singinUser{
+  signinUser(authProvider: {email: "nick@gmail.com", passwd: "secret"}){
+    token
+    user{
+      id
+      name
+    }
+  }
+  
+}
+
+query allUsers{
+ allUsers{
+  id
+  name
+  email
+  passwd
+}
+}
+

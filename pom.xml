@@ -20,15 +20,8 @@
 		<version.junit>4.12</version.junit>
 		<version.undertow>1.4.23.Final</version.undertow>
 		<version.graphql>8.0</version.graphql>
-		<version.rxjava>2.1.5</version.rxjava>
-
-		<version.hikaricp>3.0.0</version.hikaricp>
-
-
-
-		<version.mysql>6.0.5</version.mysql>
-
-		<version.mongo>3.4.2</version.mongo>
+	
+		<version.mongo>3.7.1</version.mongo>
 
 		<versions.maven-version>2.4</versions.maven-version>
 	</properties>
@@ -197,12 +190,7 @@
 			<artifactId>graphql-java-tools</artifactId>
 			<version>3.2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>io.reactivex.rxjava2</groupId>
-			<artifactId>rxjava</artifactId>
-			<version>${version.rxjava}</version>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
